@@ -8,6 +8,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace No11_6
 {
+    /// <summary>
+    /// Основной класс бота, отвечающий за подключение к Telegram API
+    /// </summary>
     public class Bot : BackgroundService
     {
         private readonly ITelegramBotClient telegramBotClient;
@@ -26,7 +29,7 @@ namespace No11_6
             telegramBotClient.StartReceiving(
                 HandleUpdateAsync,
                 HandleErrorAsync,
-                new ReceiverOptions() { AllowedUpdates = { } }, // Здесь выбираем, какие обновления хотим получать. В данном случае разрешены все.
+                new ReceiverOptions() { AllowedUpdates = { } },
                 cancellationToken: stoppingToken);
 
             Console.WriteLine("Бот запущен");
