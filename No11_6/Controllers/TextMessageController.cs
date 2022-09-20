@@ -30,7 +30,7 @@ namespace No11_6.Controllers
                         new[]
                         {
                             InlineKeyboardButton.WithCallbackData($"Получать сумму чисел" , $"getsum"),
-                            InlineKeyboardButton.WithCallbackData($"Получать количество символов" , $"getsumchar")
+                            InlineKeyboardButton.WithCallbackData($"Получать количество символов" , $"getnumchars")
                         }
                     };
 
@@ -45,7 +45,7 @@ namespace No11_6.Controllers
                     await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Выполнена FuncType.GetSum", cancellationToken: ct);
                     break;
                 default:
-                    await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Выполнена FuncType.GetSumChar", cancellationToken: ct);
+                    await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Выполнена FuncType.GetSumChars", cancellationToken: ct);
                     break;
             }
         }
