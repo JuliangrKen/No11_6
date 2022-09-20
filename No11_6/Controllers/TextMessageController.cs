@@ -20,6 +20,8 @@ namespace No11_6.Controllers
 
         public async Task Handle(Message message, CancellationToken ct)
         {
+            Console.WriteLine($"Контроллер {GetType().Name} обнаружил нажатие на кнопку");
+
             // Проверка на команды
             switch (message.Text)
             {
