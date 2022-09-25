@@ -11,20 +11,23 @@ namespace No11_6.Controllers
     {
         protected ITelegramBotClient telegramBotClient;
         protected IStorage memoryStorage;
+        protected IStringWorker stringWorker;
 
-        public TextMessageController(ITelegramBotClient telegramBotClient, IStorage memoryStorage)
+        public TextMessageController(ITelegramBotClient telegramBotClient, IStorage memoryStorage, IStringWorker stringWorker)
         {
             this.telegramBotClient = telegramBotClient;
             this.memoryStorage = memoryStorage;
+            this.stringWorker = stringWorker;
         }
 
         public async Task Handle(Message message, CancellationToken ct)
         {
-            Console.WriteLine($"Контроллер {GetType().Name} обнаружил нажатие на кнопку");
+            Console.WriteLine($"Контроллер {GetType().Name} среагировал на сообщение");
 
-            // Проверка на команды
+            // Проверка на null на команды
             switch (message.Text)
             {
+                case null: return;
                 case "/start":
 
                     var buttons = new List<InlineKeyboardButton[]>
@@ -41,13 +44,25 @@ namespace No11_6.Controllers
             }
 
             // Если не команды, то срабатывает один из вариантов функционала
-            switch(memoryStorage.GetSession(message.Chat.Id).UserFuncType)
+            switch (memoryStorage.GetSession(message.Chat.Id).UserFuncType)
             {
                 case FuncType.GetSum:
-                    await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Выполнена FuncType.GetSum", cancellationToken: ct);
+                    try
+                    {
+                        var sum = stringWorker.GetSumNumbersInString(message.Text, ' ');
+                        await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Сумма чисел равна {sum}", cancellationToken: ct);
+                    }
+                    catch (FormatException)
+                    {
+                        await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Ошибка, посторонние символы", cancellationToken: ct);
+                    }
+                    catch (OverflowException)
+                    {
+                        await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Ошибка, слишком большие числа", cancellationToken: ct);
+                    }
                     break;
                 default:
-                    await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Выполнена FuncType.GetSumChars", cancellationToken: ct);
+                    await telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Количество символов в сообщении: {stringWorker.GetNumberChars(message.Text)}", cancellationToken: ct);
                     break;
             }
         }

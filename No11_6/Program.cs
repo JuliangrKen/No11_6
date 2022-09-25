@@ -30,6 +30,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddHostedService<Bot>();
     // Регистрируем сервис получения данных о сессии пользователя
     services.AddSingleton<IStorage, MemoryStorage>();
+    // Регистрируем сервис для работы со строками
+    services.AddSingleton<IStringWorker, StringWorker>();
 }
 
 BotConfig GetBotConfig()
